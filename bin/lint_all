@@ -1,4 +1,7 @@
 #! /bin/sh
+#
+# Copyright 2022 Tourahi
+# License: MIT (see LICENSE.md at the top-level directory of the distribution)
 
 ROOT=$(cd $(dirname $0)/.. && pwd)
 

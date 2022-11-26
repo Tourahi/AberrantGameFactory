@@ -1,4 +1,6 @@
 
+
+LINTER = ./bin/lint_all
 LOVE = love
 MOON = moonc
 SOURCE_PATH = ./src
@@ -14,3 +16,6 @@ compile_moon:
 
 clean:
 	@find ${SOURCE_PATH} -name '*.lua' | xargs rm
+
+lint:
+	@$(LINTER)
