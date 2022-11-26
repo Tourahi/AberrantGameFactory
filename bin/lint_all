@@ -1,0 +1,13 @@
+#! /bin/sh
+
+ROOT=$(cd $(dirname $0)/.. && pwd)
+
+for d in src spec; do
+
+  for file in ${ROOT}/$d/*; do
+    if [ -f "$file" ]; then
+      moonpick "$file"
+    fi
+  done
+
+done
