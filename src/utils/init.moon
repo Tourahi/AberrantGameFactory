@@ -4,7 +4,6 @@ io = io
 import random from math
 import concat from table
 
-log = assert require "src.lib.lua.log.log"
 
 string = string
 
@@ -18,7 +17,7 @@ fileReadAll = (file) ->
     f\close!
     data
   else
-    log.error "Unable to load file " .. file
+    Log.error "Unable to load file " .. file
     nil
 
 --- tests if a file exists

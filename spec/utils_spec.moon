@@ -2,7 +2,7 @@ assert require('busted.runner')()
 
 import fileReadAll, fork from assert(require("src.utils.init"))
 
-log = assert require "src.lib.lua.log.log"
+assert(require("src.globals"))
 
 describe 'fileReadAll(file)', ->
 
