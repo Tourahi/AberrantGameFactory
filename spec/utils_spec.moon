@@ -1,7 +1,8 @@
 assert require('busted.runner')()
 
-import fileReadAll from assert(require("src.utils.init"))
+import fileReadAll, fork from assert(require("src.utils.init"))
 
+log = assert require "src.lib.lua.log.log"
 
 describe 'fileReadAll(file)', ->
 
@@ -14,5 +15,26 @@ describe 'fileReadAll(file)', ->
     fileName = "spec/data/test.txts"
     data = fileReadAll fileName
     assert.equals data, nil
+
+
+describe 'fork(o, seen)', ->
+
+  it 'Forks the object', ->
+    obj = {"aa": 299, "fdf": "salvo"}
+    objFork = fork obj
+    assert.are.same obj, objFork
+
+  it 'Forks the class obj', ->
+    point = class
+      new: =>
+        @x = 1
+        @y = 2
+
+      print: =>
+        print @x .. " ," .. @y
+
+    p1 = point!
+    p2 = fork p1
+    assert.are.same p1, p2
 
 
