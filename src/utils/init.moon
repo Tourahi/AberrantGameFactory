@@ -4,7 +4,7 @@ io = io
 import random from math
 import concat from table
 
-log = assert require "src.lib.log.log"
+log = assert require "src.lib.lua.log.log"
 
 --- read the content of a file
 -- @tparam string file
