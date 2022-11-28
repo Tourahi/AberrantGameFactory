@@ -7,7 +7,7 @@ ROOT=$(cd $(dirname $0)/.. && pwd)
 
 for d in src spec; do
 
-  for file in ${ROOT}/$d/*; do
+  for file in $(find ${ROOT}/$d -type f ! -path '*lib*' -prune); do
     if [ -f "$file" ]; then
       moonpick "$file"
     fi

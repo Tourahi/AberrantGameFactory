@@ -1,0 +1,8 @@
+
+{
+  whitelist_shadowing: {
+    ['src']: {
+    }
+  }
+
+}

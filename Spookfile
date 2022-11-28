@@ -1,0 +1,106 @@
+-- vim: syntax=moon
+-- How much log output can you handle? (ERR, WARN, INFO, DEBUG)
+log_level "INFO"
+
+-- by overriding os.execute we get the benefits of the coroutine based execute which
+-- can be interrupted
+:execute = require 'process'
+os.execute = execute
+:repl, :cmdline = require('shell') ->
+  dir = getcwd!
+  if os.getenv('SPOOK_INTEGRATION') == 'yes'
+    dir .. ' integration testing on% '
+  else
+    dir .. ' integration testing off% '
+
+package.path = "#{package.path};spec/support/?.lua;spec/support/?/init.lua"
+
+-- If the spookfile is reloaded we just ensure we reload
+-- the other stuff too.
+package.loaded['moonpick'] = nil
+package.loaded.lint_config = nil
+moonpick = require "moonpick"
+
+-- Require some things that come with spook
+colors = require "ansicolors"
+fs = require 'fs'
+
+-- notify is a global variable. Let's make it a local
+-- as is generally recommended in Lua.
+-- Let's add the built-in terminal_notifier.
+notify.add 'terminal_notifier'
+
+-- If we find 'notifier' in the path, let's
+-- add that notifier also. We fail silently otherwise.
+pcall notify.add, 'notifier'
+
+-- spookfile_helpers are included inside the spook binary,
+-- when needed they should be made locals as generally
+-- recommended for Lua.
+{
+  :until_success
+  :command
+  :task_filter
+  :notifies
+} = require 'spookfile_helpers'
+
+-- since the built-in helpers (required above) can be
+-- combined in different ways but usually in the same
+-- way again and again, we wrap this up in a function
+-- that takes the event and the task list (at least for
+-- spook, that's the way I run the tests).
+test = (event, tasks) ->
+  until_success ->
+    notifies event.path, event, tasks
+
+-- we use this for notifications, by filtering out
+-- the commands not runnable (because the mapped files
+-- aren't present), we don't unnecessarily notify on
+-- start / fail / success when nothing can actually
+-- happen. For a spec runner, this makes sense.
+task_list = task_filter fs.is_present
+spec = command "./tools/luajit/bin/luajit spec/support/run_busted.lua"
+exec = command "./tools/luajit/bin/luajit run.lua"
+shpec = command "shpec", env: {SPOOK: "./tools/luajit/bin/luajit run.lua init.moon"}
+
+lint = (file) ->
+  notify.info "LINTING #{file}"
+  status, res, err = pcall moonpick.lint_file, file
+  if status and res and #res > 0
+    output = moonpick.format_inspections res
+    io.stdout\write colors("\n[ %{yellow}LINT complaints ]\n%{white}#{output}\n\n")
+    error "Lint warning"
+
+  if not status or err
+    msg = err or res
+    io.stdout\write colors("\n[ %{red}LINT error ]\n%{white}#{file}\n#{msg}\n\n")
+    error "Lint error"
+
+  io.stdout\write colors("\n[ %{green}LINT: %{white}All good ]\n\n")
+
+-- Watching for changes underneath . and matching them to handlers using
+-- lua patterns (see: http://lua-users.org/wiki/PatternsTutorial for example).
+watch ".", ignore: {'%.git', '%.direnv'}, ->
+  -- TODO
+
+-- cmdline\cmd "spec_files", " - list all spec files", ->
+--   os.execute "find spec -type f -name '*_spec.moon'"
+
+-- this would execute any command in path
+-- :concat, :insert = table
+-- cmdline\dynamic (c, key, value) ->
+--   (screen, ...) ->
+--     args = {key}
+--     insert args, arg for arg in *{...}
+--     os.execute concat(args, ' ')
+
+S = require 'syscall'
+cmdline\cmd 'integration', '<on/off> Turn shpec integration tests on or off', (screen, what) ->
+  if what and what\lower! == 'on'
+    S.setenv('SPOOK_INTEGRATION', 'yes', true)
+    notify.info 'integration testing ON'
+  else
+    S.setenv('SPOOK_INTEGRATION', 'no', true)
+    notify.info 'integration testing OFF'
+
+on_read S.stdin, repl
