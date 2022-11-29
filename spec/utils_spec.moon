@@ -2,7 +2,10 @@ assert require('busted.runner')()
 
 import fileReadAll, fork from assert(require("src.utils.init"))
 
+_G.love = { math: {} }
+
 assert(require("src.globals"))
+
 
 describe 'fileReadAll(file)', ->
 

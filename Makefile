@@ -10,7 +10,7 @@ all: compile_moon agf
 
 
 agf:
-	${LOVE} ${SOURCE_PATH}
+	@${LOVE} ${SOURCE_PATH}
 
 compile_moon:
 	@find ${SOURCE_PATH} -name '*.moon' | xargs ${MOON}
