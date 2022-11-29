@@ -9,7 +9,9 @@ assert require "globals"
 Uid = Uid
 
 class Node
-  new: (name, x, y, owner = nil) =>
+  --- constructor
+  -- TODO : Params
+  new: (name, x, y) =>
 
     @id = Uid!
     @name = name
@@ -36,30 +38,43 @@ class Node
 
     @onUpdate = {}
 
+  --- node name setter
+  -- @tparam string name
   setName: (name) =>
     assert type(name) == 'string', "node name must be a string."
     @name = name
 
+  --- node name getter
   getName: =>
     @name
 
+  --- attaches a callback to onUpdate event
+  -- @tparam function name
   attachUpdateEvent: (f) =>
     assert type(f) == 'function', "update event must be a function."
     @onUpdate = f
 
+  --- add a child to a node
+  -- @tparam Node child
   addChild: (child) =>
     assert child.__class == Node, "Child must be a Node."
     insert @children, child
 
+  --- removes a child from a node
+  -- @tparam Node child
   removeChild: (child) =>
     assert (child.__class == Node),
       "The child to be removed must be a node."
     remove @children, child
 
+  --- forks a node
+  -- @tparam string name
   forkNode: (name) =>
     local node
     node = fork self
+    node.id = Uid!
     node\setName name or node\getName!
+    node
 
 
 
