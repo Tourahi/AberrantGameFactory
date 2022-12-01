@@ -38,6 +38,20 @@ class Node
 
     @onUpdate = {}
 
+    @behaviours = {}
+
+    @animate = nil
+    @frame = nil
+
+    @engineSprite = nil
+
+    @colorFilter = {1, 1, 1, 1}
+
+    @isStatic = false
+
+
+
+
   --- node name setter
   -- @tparam string name
   setName: (name) =>
@@ -76,6 +90,22 @@ class Node
     node\setName name or node\getName!
     node
 
+  addBehaviour: (b) =>
+    return
+
+  update: (dt) =>
+
+    for _, b in ipairs @behaviours
+      if b\getEnabled! then b\update(dt)
+
+    if @animate ~= nil then @animate dt
+
+    @updateChildren dt
+
+  updateChildren: (dt) =>
+    if #@children == 0 then return
+    for _, child in ipairs(@children)
+      child\update dt
 
 
 

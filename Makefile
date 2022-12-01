@@ -6,7 +6,7 @@ MOON = moonc
 SOURCE_PATH = ./src
 TEST = busted
 
-all: compile_moon agf
+all: compile_moon agf clean
 
 
 agf:
