@@ -91,7 +91,19 @@ class Node
     node
 
   addBehaviour: (b) =>
-    return
+    insert @behaviours, b
+
+  removeBehaviour: (name) =>
+    for i, b in ipairs @behaviours
+      if b.name == name
+        remove @behaviours, i
+        break
+
+  getBehaviour: (name) =>
+    for i, b in ipairs @behaviours
+      if b.name == name
+        return b
+
 
   update: (dt) =>
 

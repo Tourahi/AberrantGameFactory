@@ -36,11 +36,3 @@ class Behaviour
   --- removes the behaviour from the parent class
   remove: =>
     return --@parentNode\removeBehaviour @
-
-  --- forks the behaviour
-  fork: =>
-    local b
-    b = utils.fork @
-    b\onUpdate @updateFunc
-    b
-
