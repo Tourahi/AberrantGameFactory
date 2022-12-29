@@ -1,8 +1,11 @@
 -- Utils
 
+love = love
+
 io = io
 import random from math
 import concat from table
+import random from love.math
 
 
 string = string
@@ -62,6 +65,14 @@ randomString = (len = 8) ->
   concat arr
 
 
+-- Generates a unique id
+Uid = ->
+  f = (x) ->
+    r = random(16) - 1
+    r = (x == "x") and (r + 1) or (r % 4) + 9
+    return ("0123456789abcdef")\sub r, r
+  return (("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx")\gsub("[xy]", f))
 
 
-{:fileReadAll, :fileExists, :fork, :randomString}
+
+{:fileReadAll, :fileExists, :fork, :randomString, :Uid}

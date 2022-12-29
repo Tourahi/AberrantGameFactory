@@ -1,6 +1,7 @@
 assert require "globals"
 
 node = assert require "node"
+event = assert require "event"
 
 engine = assert require "engine"
 
@@ -13,6 +14,11 @@ with love
     -- n1 = n\forkNode 'lol'
     -- print Log.t(n1)
 
+    event.define 'l', 'lool'
+
+    e = event!
+
+    print Log.t(event.eventsDef)
 
   .update = (dt) ->
     engine\update dt

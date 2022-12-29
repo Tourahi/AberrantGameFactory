@@ -4,9 +4,9 @@
 import insert from table
 import remove from table
 import fork from assert require "utils"
+import Uid from assert require "utils"
 assert require "globals"
 
-Uid = Uid
 
 class Node
   --- constructor
